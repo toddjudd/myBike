@@ -14,9 +14,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //map
     @IBOutlet var map: MKMapView!
+    //toggle Button
+    @IBOutlet var toggleButton: UIButton!
+    //lables
+    @IBOutlet var altitudeLabel: UILabel!
+    @IBOutlet var speedLabel: UILabel!
+    @IBOutlet var latitudeLabel: UILabel!
+    @IBOutlet var longitudeLabel: UILabel!
+    
 
     let manager = CLLocationManager()
-    var tracking = true
+    var tracking = false
     var myRoute: [CLLocationCoordinate2D] = []
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -28,11 +36,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.map.showsUserLocation = true
         
         if tracking {
+            //clear map??
             map.removeOverlays(map.overlays)
+            //addcurrent location to array
             myRoute.append(bikeLocation)
-            print(myRoute)
+            //print route form array
             let myRoutePolyline = MKPolyline(coordinates: &myRoute, count: myRoute.count)
             self.map.add(myRoutePolyline)
+            //update label information
+            altitudeLabel.text = String(location.altitude)
+            speedLabel.text = String(location.speed)
+            latitudeLabel.text = String(location.coordinate.latitude)
+            longitudeLabel.text = String(location.coordinate.longitude)
         }
     }
 
@@ -61,6 +76,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         super.didReceiveMemoryWarning()
     }
 
+    @IBAction func toggleTrackingActiong(_ sender: Any) {
+        tracking = !tracking
+        if tracking {
+            toggleButton.setImage(#imageLiteral(resourceName: "notTracking"), for: UIControlState.normal)
+        } else {
+            toggleButton.setImage(#imageLiteral(resourceName: "Tracking"), for: UIControlState.normal)
+        }
+        myRoute = []
+        altitudeLabel.text = ""
+        speedLabel.text = ""
+        latitudeLabel.text = ""
+        longitudeLabel.text = ""
+    }
 
 }
 
